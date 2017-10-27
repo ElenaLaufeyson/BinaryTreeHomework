@@ -147,27 +147,36 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
               throw new IllegalArgumentException("First argument is null");
           if (toElement == null)
               throw new IllegalArgumentException("Second argument is null");
-          SortedSet<T> set = new TreeSet<>();
-          if (fromElement.compareTo(toElement) <= 0)
-              subSet(root, set, fromElement, toElement);
-          else 
-              subSet(root, set, toElement, fromElement);
-          return set;
+          if (fromElement.compareTo(toElement) > 0)
+              throw new IllegalArgumentException("fromElement > toElement");
+          return subSet(fromElement, toElement, false);
+    }
+    
+    private SortedSet<T> subSet(T fromElement, T toElement, boolean includeTo) {
+        SortedSet<T> set = new TreeSet<>();
+        subSet(root, set, fromElement, toElement, includeTo);
+        return set;
     }
     
     private void subSet(Node<T> current, SortedSet<T> set, T fromElement, 
-            T toElement) {
+            T toElement, boolean includeTo) {
         if (current == null) 
             return;
         int compFrom = current.value.compareTo(fromElement);
         int compTo = current.value.compareTo(toElement);
         if (compFrom > 0) //current.value > fromElement
-            subSet(current.left, set, fromElement, toElement);
-        //если текущий элемент лежит между "откуда" и "до куда"
-        if (compFrom >= 0 && compTo <= 0) 
+            subSet(current.left, set, fromElement, toElement, includeTo);
+        if (includeTo) {
+            //если текущий элемент лежит между "откуда" и "до куда" включительно
+            if (compFrom >= 0 && compTo <= 0) 
             set.add(current.value);
+        }
+        else {
+            if (compFrom >= 0 && compTo < 0) 
+            set.add(current.value);
+        }
         if (compTo < 0) 
-            subSet(current.right, set, fromElement, toElement);
+           subSet(current.right, set, fromElement, toElement, includeTo);
     }
 
     @NotNull
@@ -180,7 +189,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @Override
     public SortedSet<T> tailSet(T fromElement) {
 //        throw new UnsupportedOperationException();
-          SortedSet<T> set = subSet(fromElement, last());
+          SortedSet<T> set = subSet(fromElement, last(), true);
           return set;
     }
 

@@ -11,10 +11,10 @@ public class BinaryTreeMain {
         BinaryTree<Integer> tree = new BinaryTree<>();
         List<Integer> list = Arrays.asList(2, 4, 8, 6, 5, 7, 1, 9);
         tree.addAll(list);
-//        System.out.println(list);
-        SortedSet set = tree.subSet(-1, 3);
+        System.out.println(list);
+        SortedSet set = tree.subSet(2, 8);
         System.out.println(set);
-        SortedSet set2 = tree.tailSet(3);
+        SortedSet set2 = tree.tailSet(4);
         System.out.println(set2);
     }
     
